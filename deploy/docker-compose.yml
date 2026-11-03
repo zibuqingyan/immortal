@@ -1,0 +1,37 @@
+services:
+  immortal:
+    image: immortal:2.0.0
+    container_name: immortal
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    volumes:
+      - "${DATA_DIR:-./data}:/data"
+      - "${MEDIA_DIR:-./media}:/media:rw"
+      # 可选：Emby 数据目录，用于「照影壁」观看统计。不用就把下面两行删掉
+      # - "${EMBY_DATA_DIR:-./emby-data}:/emby-data:ro"
+    environment:
+      TZ: "${TZ:-Asia/Shanghai}"
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: "${POSTGRES_USER:-immortal}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-immortal}"
+      POSTGRES_DB: "${POSTGRES_DB:-immortal}"
+      # 可选：抓取数据源的出网代理。留空则直连（部分源在国内网络下可能需要代理）
+      SCRAPE_PROXY: "${SCRAPE_PROXY:-}"
+      # 可选：FlareSolverr / 验证码求解服务地址（仅 X1080 等需要过盾的源用到）
+      SCRAPE_SOLVER: "${SCRAPE_SOLVER:-}"
+    depends_on:
+      - postgresql
+    restart: always
+
+  postgresql:
+    image: postgres:17.1
+    container_name: immortal-pgsql
+    volumes:
+      - "${PG_DIR:-./pgdata}:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB:-immortal}"
+      POSTGRES_USER: "${POSTGRES_USER:-immortal}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-immortal}"
+    command: postgres -p 5432
+    restart: always
