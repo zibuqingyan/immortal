@@ -3,6 +3,10 @@
 > 影视元数据 / 订阅 / 刮削管理面板。Docker 一键部署，前端已内置，无需编译。
 >
 > 维护者：**子不轻言** · 当前版本 **2.0.0**
+>
+> Docker Hub：**[zibuqingyan/immortal](https://hub.docker.com/r/zibuqingyan/immortal)**
+> [![Docker Pulls](https://img.shields.io/docker/pulls/zibuqingyan/immortal)](https://hub.docker.com/r/zibuqingyan/immortal)
+> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.0.0)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
 
 ---
 
@@ -21,19 +25,35 @@ immortal 不负责播放，负责「片子进库之前和之后的所有麻烦�
 
 ## 下载
 
-到 [Releases](../../releases/latest) 取最新版：
+### 方式一：直接拉镜像（推荐）
+
+```bash
+docker pull zibuqingyan/immortal:2.0.0
+```
+
+然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.0.0`，
+或者本地打个 tag 省得改：
+
+```bash
+docker tag zibuqingyan/immortal:2.0.0 immortal:2.0.0
+```
+
+### 方式二：离线包
+
+到 [Releases](../../releases/latest) 取：
 
 | 文件 | 大小 | 用途 |
 |---|---|---|
-| `immortal-2.0.0-compose.zip` | ~157 MB | **推荐**。镜像 + compose + 文档，一次到位 |
+| `immortal-2.0.0-compose.zip` | ~157 MB | 镜像 + compose + 文档，一次到位 |
 | `immortal-2.0.0-image.tar.gz` | ~158 MB | 只要镜像（已有 compose 时用这个） |
 | `immortal-2.0.0-compose.tar.gz` | ~12 KB | 只要 compose 与文档 |
 
 ## 三步启动
 
 ```bash
-# 1) 导入镜像
-gunzip -c immortal-2.0.0-image.tar.gz | docker load
+# 1) 拿到镜像（二选一）
+docker pull zibuqingyan/immortal:2.0.0
+#   或： gunzip -c immortal-2.0.0-image.tar.gz | docker load
 
 # 2) 配置（改 MEDIA_DIR 与 POSTGRES_PASSWORD 两项）
 cp .env.example .env && vi .env
