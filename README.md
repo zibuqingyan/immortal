@@ -6,6 +6,7 @@
 >
 > Docker Hub：**[zibuqingyan/immortal](https://hub.docker.com/r/zibuqingyan/immortal)**
 > [![Docker Pulls](https://img.shields.io/docker/pulls/zibuqingyan/immortal)](https://hub.docker.com/r/zibuqingyan/immortal)
+> [![Docker Version](https://img.shields.io/docker/v/zibuqingyan/immortal?sort=semver)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
 > [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.0.0)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
 
 ---
