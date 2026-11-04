@@ -1,6 +1,6 @@
 services:
   immortal:
-    image: immortal:2.0.0
+    image: immortal:2.0.2
     container_name: immortal
     ports:
       - "${WEB_PORT:-8000}:8000"
