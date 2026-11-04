@@ -1,6 +1,6 @@
 services:
   immortal:
-    image: immortal:2.0.2
+    image: zibuqingyan/immortal:2.1.3
     container_name: immortal
     ports:
       - "${WEB_PORT:-8000}:8000"
