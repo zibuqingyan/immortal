@@ -2,12 +2,12 @@
 
 > 影视元数据 / 订阅 / 刮削管理面板。Docker 一键部署，前端已内置，无需编译。
 >
-> 维护者：**子不轻言** · 当前版本 **2.0.2**
+> 维护者：**子不轻言** · 当前版本 **2.1.3**
 >
 > Docker Hub：**[zibuqingyan/immortal](https://hub.docker.com/r/zibuqingyan/immortal)**
 > [![Docker Pulls](https://img.shields.io/docker/pulls/zibuqingyan/immortal)](https://hub.docker.com/r/zibuqingyan/immortal)
 > [![Docker Version](https://img.shields.io/docker/v/zibuqingyan/immortal?sort=semver)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
-> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.0.2)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
+> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.1.3)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
 
 ---
 
@@ -29,13 +29,13 @@ immortal 不负责播放，负责「片子进库之前和之后的所有麻烦�
 ### 方式一：直接拉镜像（推荐）
 
 ```bash
-docker pull zibuqingyan/immortal:2.0.2
+docker pull zibuqingyan/immortal:2.1.3
 ```
 
-然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.0.2`，或本地打 tag：
+然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.1.3`，或本地打 tag：
 
 ```bash
-docker tag zibuqingyan/immortal:2.0.2 immortal:2.0.2
+docker tag zibuqingyan/immortal:2.1.3 immortal:2.1.3
 ```
 
 ### 方式二：离线包
@@ -45,8 +45,8 @@ docker tag zibuqingyan/immortal:2.0.2 immortal:2.0.2
 ## 三步启动
 
 ```bash
-docker pull zibuqingyan/immortal:2.0.2
-#   或： gunzip -c immortal-2.0.2-image.tar.gz | docker load
+docker pull zibuqingyan/immortal:2.1.3
+#   或： gunzip -c immortal-2.1.3-image.tar.gz | docker load
 cp .env.example .env && vi .env   # 改 MEDIA_DIR 与 POSTGRES_PASSWORD
 docker compose up -d && docker compose ps
 ```
@@ -98,6 +98,8 @@ NFO 必须与视频同名（`ABC-123.mp4` ↔ `ABC-123.nfo`）。
 
 | 版本 | 要点 |
 |---|---|
+| 2.1.3 | 首次配置向导补齐下载器：qBittorrent / Transmission / CloudDrive / 迅雷 四种可选，每种都带保存目录；媒体目录步骤新增「监听目录」，保存即重启监听，打通「下载 → 自动刮削」；侧边栏「仙府内务」直接挂上维护中心（补天阁）入口 |
+| 2.1.2 | **维护中心**页面上线（补天阁：番号归一 / 变更撤销 / 配置回滚 / 只读体检 / 监听对齐 / 字段回填）；番号冲突自动合并（标题+等价番号判重，执行前快照、可整批撤销）；写入路径按等价番号查重，阻断新重复；文件变更日志与批量撤销；配置历史与逐版回滚；刮削成功后 Emby 单条目刷新；字段冲突留痕；影片字段回填任务；卡死任务回收与自动重试 |
 | 2.0.2 | 六步首次配置向导 + 连通自检；数据源失败归因（四态健康度 / 单源自测）；数据覆盖率可视化与一键回填；PWA 冷启缓存防回归；CORS 默认同源 |
 | 2.0.1 | 安全加固：JWT 密钥随机持久化、登录态默认过期、敏感接口鉴权；天机台补「硬链接」选项 |
 | 2.0.0 | 双命名全站贯通、版本页加维护者、镜像去掉私有内网默认值 |
