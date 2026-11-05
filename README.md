@@ -2,12 +2,12 @@
 
 > 影视元数据 / 订阅 / 刮削管理面板。Docker 一键部署，前端已内置，无需编译。
 >
-> 维护者：**子不轻言** · 当前版本 **2.1.5**
+> 维护者：**子不轻言** · 当前版本 **2.1.6**
 >
 > Docker Hub：**[zibuqingyan/immortal](https://hub.docker.com/r/zibuqingyan/immortal)**
 > [![Docker Pulls](https://img.shields.io/docker/pulls/zibuqingyan/immortal)](https://hub.docker.com/r/zibuqingyan/immortal)
 > [![Docker Version](https://img.shields.io/docker/v/zibuqingyan/immortal?sort=semver)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
-> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.1.5)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
+> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.1.6)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
 
 ---
 
@@ -39,15 +39,15 @@ immortal 不负责播放，负责「片子进库之前和之后的所有麻烦�
 ### 方式一：直接拉镜像（推荐）
 
 ```bash
-docker pull zibuqingyan/immortal:2.1.5
+docker pull zibuqingyan/immortal:2.1.6
 ```
 
 镜像同时提供 **amd64** 与 **arm64** 两种架构，Docker 会按当前设备自动选择，群晖 / 威联通 / 树莓派这类 ARM 机器不用再自己转镜像。
 
-然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.1.5`，或本地打 tag：
+然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.1.6`，或本地打 tag：
 
 ```bash
-docker tag zibuqingyan/immortal:2.1.5 immortal:2.1.5
+docker tag zibuqingyan/immortal:2.1.6 immortal:2.1.6
 ```
 
 ### 方式二：离线包
@@ -57,8 +57,8 @@ docker tag zibuqingyan/immortal:2.1.5 immortal:2.1.5
 ## 三步启动
 
 ```bash
-docker pull zibuqingyan/immortal:2.1.5
-#   或： gunzip -c immortal-2.1.5-image.tar.gz | docker load
+docker pull zibuqingyan/immortal:2.1.6
+#   或： gunzip -c immortal-2.1.6-image.tar.gz | docker load
 cp .env.example .env && vi .env   # 改 MEDIA_DIR 与 POSTGRES_PASSWORD
 docker compose up -d && docker compose ps
 ```
@@ -110,6 +110,7 @@ NFO 必须与视频同名（`ABC-123.mp4` ↔ `ABC-123.nfo`）。
 
 | 版本 | 要点 |
 |---|---|
+| 2.1.6 | 补天阁新增「多版本择优」：自定义优先级规则序列、按视频库限定扫描、按建议一键清理（永久删除，逐组二次确认）、同目录分组判据修正；手机端结果改卡片布局、排序规则默认折叠；后端启动内存优化（pandas 延迟导入、机器人按配置懒加载），空闲常驻内存降低约 21% |
 | 2.1.5 | 恢复「版本更新检查」：每天 09:00 对比 GitHub Releases 与 Docker Hub，发现比当前运行版本更新的版本时推送到已启用的通知渠道，同一版本只推一次；「版本印记」显示可升级版本、发布时间、升级命令与当次更新说明，可手动重新检查，并内置近六个版本的更新记录（离线可读）；修正「启用 AI 能力」开关的说明——它是总开关，关闭会同时停用机器人对话与演员简介翻译；页面标题图标统一从导航配置取，此前盈虚鉴、启程引、浮光阁三页标题前是空的 |
 | 2.1.4 | 引导补齐「媒体服务器」四选一（Emby / Jellyfin / Plex / 极影视，各带专属凭据字段）与「通知渠道」步骤（企业微信 / Telegram / Discord），共七步；抓取源可在向导内直接启用/停用，不必再跳去灵源谱；连通自检新增通知渠道项，并逐个探测已配置的媒体服务器与全部下载器（4xx 标注「需鉴权，属正常」不再误报）；侧边栏「仙府内务」补上「盈虚鉴」（数据覆盖率）入口；维护中心新增「订阅重复体检」，只读列出被多路订阅重复覆盖的影片与条件重复的综合订阅 |
 | 2.1.3 | 首次配置向导补齐下载器：qBittorrent / Transmission / CloudDrive / 迅雷 四种可选，每种都带保存目录；媒体目录步骤新增「监听目录」，保存即重启监听，打通「下载 → 自动刮削」；侧边栏「仙府内务」直接挂上维护中心（补天阁）入口 |
