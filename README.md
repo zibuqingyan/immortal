@@ -2,12 +2,12 @@
 
 > 影视元数据 / 订阅 / 刮削管理面板。Docker 一键部署，前端已内置，无需编译。
 >
-> 维护者：**子不轻言** · 当前版本 **2.1.3**
+> 维护者：**子不轻言** · 当前版本 **2.1.4**
 >
 > Docker Hub：**[zibuqingyan/immortal](https://hub.docker.com/r/zibuqingyan/immortal)**
 > [![Docker Pulls](https://img.shields.io/docker/pulls/zibuqingyan/immortal)](https://hub.docker.com/r/zibuqingyan/immortal)
 > [![Docker Version](https://img.shields.io/docker/v/zibuqingyan/immortal?sort=semver)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
-> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.1.3)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
+> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.1.4)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
 
 ---
 
@@ -22,20 +22,20 @@ immortal 不负责播放，负责「片子进库之前和之后的所有麻烦�
 
 界面支持**仙侠 / 通俗双命名**，一键切换全站文案。
 
-首次启动有**六步配置向导**（媒体目录 / 媒体服务器 / 下载器 / 网络与代理 / 抓取源 / 连通自检），每一步都能跳过、配置随时可改；配置不全时观星台会显示引导条。
+首次启动有**七步配置向导**（媒体目录 / 媒体服务器 / 下载器 / 通知渠道 / 网络与代理 / 抓取源 / 连通自检），媒体服务器支持 Emby、Jellyfin、Plex、极影视四选一，下载器四种任选，通知三渠道任选；每一步都能跳过、配置随时可改，配置不全时观星台会显示引导条。
 
 ## 下载
 
 ### 方式一：直接拉镜像（推荐）
 
 ```bash
-docker pull zibuqingyan/immortal:2.1.3
+docker pull zibuqingyan/immortal:2.1.4
 ```
 
-然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.1.3`，或本地打 tag：
+然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.1.4`，或本地打 tag：
 
 ```bash
-docker tag zibuqingyan/immortal:2.1.3 immortal:2.1.3
+docker tag zibuqingyan/immortal:2.1.4 immortal:2.1.4
 ```
 
 ### 方式二：离线包
@@ -45,8 +45,8 @@ docker tag zibuqingyan/immortal:2.1.3 immortal:2.1.3
 ## 三步启动
 
 ```bash
-docker pull zibuqingyan/immortal:2.1.3
-#   或： gunzip -c immortal-2.1.3-image.tar.gz | docker load
+docker pull zibuqingyan/immortal:2.1.4
+#   或： gunzip -c immortal-2.1.4-image.tar.gz | docker load
 cp .env.example .env && vi .env   # 改 MEDIA_DIR 与 POSTGRES_PASSWORD
 docker compose up -d && docker compose ps
 ```
@@ -64,7 +64,7 @@ docker compose up -d && docker compose ps
 | 整理 | 目录浏览、扫描识别番号、空目录清理（先出计划再执行） |
 | 统计 | Emby 观影统计、排行、观影海报生成 |
 | 运维 | 定时任务（cron）+ 执行日志 + API Token + 三渠道通知 |
-| 配置 | 六步首次配置向导、连通自检 |
+| 配置 | 七步首次配置向导（四类媒体服务器 / 四种下载器 / 三种通知渠道）、连通自检 |
 | 可观测 | 数据源健康度（成功 / 请求失败 / 解析失败 / 真空未命中 / 不可用）、数据覆盖率 |
 
 ## 环境要求
@@ -98,6 +98,7 @@ NFO 必须与视频同名（`ABC-123.mp4` ↔ `ABC-123.nfo`）。
 
 | 版本 | 要点 |
 |---|---|
+| 2.1.4 | 引导补齐「媒体服务器」四选一（Emby / Jellyfin / Plex / 极影视，各带专属凭据字段）与「通知渠道」步骤（企业微信 / Telegram / Discord），共七步；抓取源可在向导内直接启用/停用，不必再跳去灵源谱；连通自检新增通知渠道项，并逐个探测已配置的媒体服务器与全部下载器（4xx 标注「需鉴权，属正常」不再误报）；侧边栏「仙府内务」补上「盈虚鉴」（数据覆盖率）入口；维护中心新增「订阅重复体检」，只读列出被多路订阅重复覆盖的影片与条件重复的综合订阅 |
 | 2.1.3 | 首次配置向导补齐下载器：qBittorrent / Transmission / CloudDrive / 迅雷 四种可选，每种都带保存目录；媒体目录步骤新增「监听目录」，保存即重启监听，打通「下载 → 自动刮削」；侧边栏「仙府内务」直接挂上维护中心（补天阁）入口 |
 | 2.1.2 | **维护中心**页面上线（补天阁：番号归一 / 变更撤销 / 配置回滚 / 只读体检 / 监听对齐 / 字段回填）；番号冲突自动合并（标题+等价番号判重，执行前快照、可整批撤销）；写入路径按等价番号查重，阻断新重复；文件变更日志与批量撤销；配置历史与逐版回滚；刮削成功后 Emby 单条目刷新；字段冲突留痕；影片字段回填任务；卡死任务回收与自动重试 |
 | 2.0.2 | 六步首次配置向导 + 连通自检；数据源失败归因（四态健康度 / 单源自测）；数据覆盖率可视化与一键回填；PWA 冷启缓存防回归；CORS 默认同源 |
