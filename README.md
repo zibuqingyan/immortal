@@ -11,6 +11,16 @@
 
 ---
 
+| 观星台 · 库存与来源分布 | 补天阁 · 番号归一与整批撤销 |
+|---|---|
+| <img src="screenshots/01-dashboard.png" width="440" alt="观星台总览"> | <img src="screenshots/03-maintenance.png" width="440" alt="维护中心"> |
+
+<img src="screenshots/02-scrape.png" width="900" alt="天机台：目录监听与刮削状态">
+
+> 截图使用「模糊图片」模式：海报与封面不显示，只看功能与数据。
+
+---
+
 ## 这是什么
 
 immortal 不负责播放，负责「片子进库之前和之后的所有麻烦事」：
@@ -32,6 +42,8 @@ immortal 不负责播放，负责「片子进库之前和之后的所有麻烦�
 docker pull zibuqingyan/immortal:2.1.5
 ```
 
+镜像同时提供 **amd64** 与 **arm64** 两种架构，Docker 会按当前设备自动选择，群晖 / 威联通 / 树莓派这类 ARM 机器不用再自己转镜像。
+
 然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.1.5`，或本地打 tag：
 
 ```bash
@@ -40,7 +52,7 @@ docker tag zibuqingyan/immortal:2.1.5 immortal:2.1.5
 
 ### 方式二：离线包
 
-到 [Releases](../../releases) 取对应版本的 `*-compose.zip`（镜像 + compose + 文档）、`*-image.tar.gz`（只要镜像）或 `*-compose.tar.gz`（只要 compose 与文档）。
+到 [Releases](../../releases) 取对应版本的 `*-compose.zip`（镜像 + compose + 文档）、`*-image.tar.gz`（amd64 镜像）、`*-image-arm64.tar.gz`（arm64 镜像）或 `*-compose.tar.gz`（只要 compose 与文档）。
 
 ## 三步启动
 
