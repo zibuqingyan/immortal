@@ -2,12 +2,12 @@
 
 > 影视元数据 / 订阅 / 刮削管理面板。Docker 一键部署，前端已内置，无需编译。
 >
-> 维护者：**子不轻言** · 当前版本 **2.1.6**
+> 维护者：**子不轻言** · 当前版本 **2.2.2**
 >
 > Docker Hub：**[zibuqingyan/immortal](https://hub.docker.com/r/zibuqingyan/immortal)**
 > [![Docker Pulls](https://img.shields.io/docker/pulls/zibuqingyan/immortal)](https://hub.docker.com/r/zibuqingyan/immortal)
 > [![Docker Version](https://img.shields.io/docker/v/zibuqingyan/immortal?sort=semver)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
-> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.1.6)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
+> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.2.2)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
 
 ---
 
@@ -36,29 +36,29 @@ immortal 不负责播放，负责「片子进库之前和之后的所有麻烦�
 
 ## 下载
 
+> **架构说明**：2.2.2 目前只提供 **amd64** 镜像（群晖 / 威联通 / 极空间等 x86 机型，以及绝大多数家用 NAS 与服务器）。arm64 机型可继续使用 [2.1.6](https://hub.docker.com/r/zibuqingyan/immortal/tags)，功能差异见下方「版本」表。
+
 ### 方式一：直接拉镜像（推荐）
 
 ```bash
-docker pull zibuqingyan/immortal:2.1.6
+docker pull zibuqingyan/immortal:2.2.2
 ```
 
-镜像同时提供 **amd64** 与 **arm64** 两种架构，Docker 会按当前设备自动选择，群晖 / 威联通 / 树莓派这类 ARM 机器不用再自己转镜像。
-
-然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.1.6`，或本地打 tag：
+然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.2.2`，或本地打 tag：
 
 ```bash
-docker tag zibuqingyan/immortal:2.1.6 immortal:2.1.6
+docker tag zibuqingyan/immortal:2.2.2 immortal:2.2.2
 ```
 
 ### 方式二：离线包
 
-到 [Releases](../../releases) 取对应版本的 `*-compose.zip`（镜像 + compose + 文档）、`*-image.tar.gz`（amd64 镜像）、`*-image-arm64.tar.gz`（arm64 镜像）或 `*-compose.tar.gz`（只要 compose 与文档）。
+到 [Releases](../../releases) 取对应版本的 `*-compose.zip`（compose + 文档 + 截图）、`*-image.tar.gz`（amd64 镜像）或 `*-compose.tar.gz`（只要 compose 与文档）。
 
 ## 三步启动
 
 ```bash
-docker pull zibuqingyan/immortal:2.1.6
-#   或： gunzip -c immortal-2.1.6-image.tar.gz | docker load
+docker pull zibuqingyan/immortal:2.2.2
+#   或： gunzip -c immortal-2.2.2-image.tar.gz | docker load
 cp .env.example .env && vi .env   # 改 MEDIA_DIR 与 POSTGRES_PASSWORD
 docker compose up -d && docker compose ps
 ```
@@ -110,6 +110,9 @@ NFO 必须与视频同名（`ABC-123.mp4` ↔ `ABC-123.nfo`）。
 
 | 版本 | 要点 |
 |---|---|
+| 2.2.2 | **修复 JavDB 抓取中断**：查清是 v2raya 的「最小延迟」策略把出口长期钉在日本节点，而日本被站点按地区封锁；已把日本节点移出出网池，出口改由新加坡 / 香港 / 美国等可用地区承担。**反爬限流与地区封锁分开处理**：403 改为退避重试并自动拉长请求间隔，只有版权限制页才判定出口不可用，不再一条 403 就让整轮任务作废；订阅补抓基础间隔由 1.5 秒放宽到 3 秒，受限时逐步后撤、恢复后收回。实测订阅补抓由 15 条全未命中恢复为 15 条全命中、入库 7 条 |
+| 2.2.1 | **抓取零产出主动告警**：连续 3 次抓不到内容就推一条通知，不再因为任务「没报错」而让整天 0 入库悄悄过去；「没活可干」（没有待补番号）不算零产出，不打扰人；JavDB 出口被封锁时立刻失败并写明原因，不再空跑几千次请求、每条影片重登一次；通知发送支持多线路兜底（配置代理 → 抓取代理 → 直连）；任务日志区分「成功 / 失败 / 本次无产出」 |
+| 2.2.0 | 手机端逐页梳理：验证码不再横向溢出、底部导航统一留安全区、长表格改卡片布局、小按钮触控热区补到 40px；双命名收敛，通俗模式下不再漏出仙侠词，页面标题、说明与图标统一从导航配置取；配色集中由主题变量提供，亮暗主题自动切换；文案与空态说清原因与下一步；新增前端 UI 守卫并接入发版门禁 |
 | 2.1.6 | 补天阁新增「多版本择优」：自定义优先级规则序列、按视频库限定扫描、按建议一键清理（永久删除，逐组二次确认）、同目录分组判据修正；手机端结果改卡片布局、排序规则默认折叠；后端启动内存优化（pandas 延迟导入、机器人按配置懒加载），空闲常驻内存降低约 21% |
 | 2.1.5 | 恢复「版本更新检查」：每天 09:00 对比 GitHub Releases 与 Docker Hub，发现比当前运行版本更新的版本时推送到已启用的通知渠道，同一版本只推一次；「版本印记」显示可升级版本、发布时间、升级命令与当次更新说明，可手动重新检查，并内置近六个版本的更新记录（离线可读）；修正「启用 AI 能力」开关的说明——它是总开关，关闭会同时停用机器人对话与演员简介翻译；页面标题图标统一从导航配置取，此前盈虚鉴、启程引、浮光阁三页标题前是空的 |
 | 2.1.4 | 引导补齐「媒体服务器」四选一（Emby / Jellyfin / Plex / 极影视，各带专属凭据字段）与「通知渠道」步骤（企业微信 / Telegram / Discord），共七步；抓取源可在向导内直接启用/停用，不必再跳去灵源谱；连通自检新增通知渠道项，并逐个探测已配置的媒体服务器与全部下载器（4xx 标注「需鉴权，属正常」不再误报）；侧边栏「仙府内务」补上「盈虚鉴」（数据覆盖率）入口；维护中心新增「订阅重复体检」，只读列出被多路订阅重复覆盖的影片与条件重复的综合订阅 |
