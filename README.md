@@ -2,12 +2,12 @@
 
 > 影视元数据 / 订阅 / 刮削管理面板。Docker 一键部署，前端已内置，无需编译。
 >
-> 维护者：**子不轻言** · 当前版本 **2.3.0**
+> 维护者：**子不轻言** · 当前版本 **2.3.4**
 >
 > Docker Hub：**[zibuqingyan/immortal](https://hub.docker.com/r/zibuqingyan/immortal)**
 > [![Docker Pulls](https://img.shields.io/docker/pulls/zibuqingyan/immortal)](https://hub.docker.com/r/zibuqingyan/immortal)
 > [![Docker Version](https://img.shields.io/docker/v/zibuqingyan/immortal?sort=semver)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
-> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.3.0)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
+> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.3.4)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
 
 ---
 
@@ -36,20 +36,20 @@ immortal 不负责播放，负责「片子进库之前和之后的所有麻烦�
 
 ## 下载
 
-> **架构说明**：2.3.0 目前只提供 **amd64** 镜像（群晖 / 威联通 / 极空间等 x86 机型，以及绝大多数家用 NAS 与服务器）。arm64 机型可继续使用 [2.1.6](https://hub.docker.com/r/zibuqingyan/immortal/tags)，功能差异见下方「版本」表。
+> **架构说明**：2.3.4 目前只提供 **amd64** 镜像（群晖 / 威联通 / 极空间等 x86 机型，以及绝大多数家用 NAS 与服务器）。arm64 机型可继续使用 [2.1.6](https://hub.docker.com/r/zibuqingyan/immortal/tags)，功能差异见下方「版本」表。
 >
-> 2.3.0 **已发布**，并把此前只在本地构建的 2.2.3～2.2.9 一并带上（JavDB 撞限流自动冷却重试、通知多轮重试、监听目录可单独移除）。
+> 2.3.4 **已发布**，并把此前只在本地构建的 2.2.3～2.2.9 一并带上（JavDB 撞限流自动冷却重试、通知多轮重试、监听目录可单独移除）。
 
 ### 方式一：直接拉镜像（推荐）
 
 ```bash
-docker pull zibuqingyan/immortal:2.3.0
+docker pull zibuqingyan/immortal:2.3.4
 ```
 
-然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.3.0`，或本地打 tag：
+然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.3.4`，或本地打 tag：
 
 ```bash
-docker tag zibuqingyan/immortal:2.3.0 immortal:2.3.0
+docker tag zibuqingyan/immortal:2.3.4 immortal:2.3.4
 ```
 
 ### 方式二：离线包
@@ -59,8 +59,8 @@ docker tag zibuqingyan/immortal:2.3.0 immortal:2.3.0
 ## 三步启动
 
 ```bash
-docker pull zibuqingyan/immortal:2.3.0
-#   或： gunzip -c immortal-2.3.0-image.tar.gz | docker load
+docker pull zibuqingyan/immortal:2.3.4
+#   或： gunzip -c immortal-2.3.4-image.tar.gz | docker load
 cp .env.example .env && vi .env   # 改 MEDIA_DIR 与 POSTGRES_PASSWORD
 docker compose up -d && docker compose ps
 ```
@@ -112,7 +112,7 @@ NFO 必须与视频同名（`ABC-123.mp4` ↔ `ABC-123.nfo`）。
 
 | 版本 | 要点 |
 |---|---|
-| 2.3.0 | **目录不再锁在 /media、AV 库不再写死库名**：媒体挂载点与库名都因服务器而异，这版把「必须在 /media 下」的路径校验整条去掉，扫描 / 整理 / 空目录清理按实际路径工作；新增设置「媒体库」，从服务器真实库列表勾选 AV 库与观影统计库，留空则自动识别。群芳谱演员数、盈虚鉴统计范围、NFO 演员补全扫描根、整理目标目录默认值、补天阁默认扫描目录一并改为按所选库解析；整理目标目录留空即自动取 AV 库目录 |
+| 2.3.4 | **目录不再锁在 /media、AV 库不再写死库名**：媒体挂载点与库名都因服务器而异，这版把「必须在 /media 下」的路径校验整条去掉，扫描 / 整理 / 空目录清理按实际路径工作；新增设置「媒体库」，从服务器真实库列表勾选 AV 库与观影统计库，留空则自动识别。群芳谱演员数、盈虚鉴统计范围、NFO 演员补全扫描根、整理目标目录默认值、补天阁默认扫描目录一并改为按所选库解析；整理目标目录留空即自动取 AV 库目录 |
 | 2.2.9 | **修「删掉的监听目录又回来」**：改监听配置时只写了库，正在运行的监听器没重启，仍按旧目录工作，界面轮询把旧目录读回来；现在先停再起并等旧线程退出，顺带避免两个监听器重复刮同一部片 |
 | 2.2.8 | **刮削监听支持单独移除目录**：每个目录后带 ×，点一下即从监听列表移除；展开「配置」自动回填当前目录，改动标黄提示，点「应用并重启」生效。此前目录只能整组重填、列表还是只读的 |
 | 2.2.7 | **JavDB 请求间隔自适应**：撞一次限流就放宽一半、连续 20 次顺利再慢慢收回。实测同一出口 IP 间隔 1.8 秒第 20 条被掐、3.9 秒第 11 条也被掐，站点按滚动窗口记分，固定间隔治不了 |
