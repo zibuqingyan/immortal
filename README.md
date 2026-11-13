@@ -2,12 +2,12 @@
 
 > 影视元数据 / 订阅 / 刮削管理面板。Docker 一键部署，前端已内置，无需编译。
 >
-> 维护者：**子不轻言** · 当前版本 **2.2.2**
+> 维护者：**子不轻言** · 当前版本 **2.3.0**
 >
 > Docker Hub：**[zibuqingyan/immortal](https://hub.docker.com/r/zibuqingyan/immortal)**
 > [![Docker Pulls](https://img.shields.io/docker/pulls/zibuqingyan/immortal)](https://hub.docker.com/r/zibuqingyan/immortal)
 > [![Docker Version](https://img.shields.io/docker/v/zibuqingyan/immortal?sort=semver)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
-> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.2.2)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
+> [![Image Size](https://img.shields.io/docker/image-size/zibuqingyan/immortal/2.3.0)](https://hub.docker.com/r/zibuqingyan/immortal/tags)
 
 ---
 
@@ -36,18 +36,20 @@ immortal 不负责播放，负责「片子进库之前和之后的所有麻烦�
 
 ## 下载
 
-> **架构说明**：2.2.2 目前只提供 **amd64** 镜像（群晖 / 威联通 / 极空间等 x86 机型，以及绝大多数家用 NAS 与服务器）。arm64 机型可继续使用 [2.1.6](https://hub.docker.com/r/zibuqingyan/immortal/tags)，功能差异见下方「版本」表。
+> **架构说明**：2.3.0 目前只提供 **amd64** 镜像（群晖 / 威联通 / 极空间等 x86 机型，以及绝大多数家用 NAS 与服务器）。arm64 机型可继续使用 [2.1.6](https://hub.docker.com/r/zibuqingyan/immortal/tags)，功能差异见下方「版本」表。
+>
+> 2.3.0 **已发布**，并把此前只在本地构建的 2.2.3～2.2.9 一并带上（JavDB 撞限流自动冷却重试、通知多轮重试、监听目录可单独移除）。
 
 ### 方式一：直接拉镜像（推荐）
 
 ```bash
-docker pull zibuqingyan/immortal:2.2.2
+docker pull zibuqingyan/immortal:2.3.0
 ```
 
-然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.2.2`，或本地打 tag：
+然后 `deploy/docker-compose.yml` 里把 `image:` 改成 `zibuqingyan/immortal:2.3.0`，或本地打 tag：
 
 ```bash
-docker tag zibuqingyan/immortal:2.2.2 immortal:2.2.2
+docker tag zibuqingyan/immortal:2.3.0 immortal:2.3.0
 ```
 
 ### 方式二：离线包
@@ -57,8 +59,8 @@ docker tag zibuqingyan/immortal:2.2.2 immortal:2.2.2
 ## 三步启动
 
 ```bash
-docker pull zibuqingyan/immortal:2.2.2
-#   或： gunzip -c immortal-2.2.2-image.tar.gz | docker load
+docker pull zibuqingyan/immortal:2.3.0
+#   或： gunzip -c immortal-2.3.0-image.tar.gz | docker load
 cp .env.example .env && vi .env   # 改 MEDIA_DIR 与 POSTGRES_PASSWORD
 docker compose up -d && docker compose ps
 ```
@@ -110,6 +112,14 @@ NFO 必须与视频同名（`ABC-123.mp4` ↔ `ABC-123.nfo`）。
 
 | 版本 | 要点 |
 |---|---|
+| 2.3.0 | **目录不再锁在 /media、AV 库不再写死库名**：媒体挂载点与库名都因服务器而异，这版把「必须在 /media 下」的路径校验整条去掉，扫描 / 整理 / 空目录清理按实际路径工作；新增设置「媒体库」，从服务器真实库列表勾选 AV 库与观影统计库，留空则自动识别。群芳谱演员数、盈虚鉴统计范围、NFO 演员补全扫描根、整理目标目录默认值、补天阁默认扫描目录一并改为按所选库解析；整理目标目录留空即自动取 AV 库目录 |
+| 2.2.9 | **修「删掉的监听目录又回来」**：改监听配置时只写了库，正在运行的监听器没重启，仍按旧目录工作，界面轮询把旧目录读回来；现在先停再起并等旧线程退出，顺带避免两个监听器重复刮同一部片 |
+| 2.2.8 | **刮削监听支持单独移除目录**：每个目录后带 ×，点一下即从监听列表移除；展开「配置」自动回填当前目录，改动标黄提示，点「应用并重启」生效。此前目录只能整组重填、列表还是只读的 |
+| 2.2.7 | **JavDB 请求间隔自适应**：撞一次限流就放宽一半、连续 20 次顺利再慢慢收回。实测同一出口 IP 间隔 1.8 秒第 20 条被掐、3.9 秒第 11 条也被掐，站点按滚动窗口记分，固定间隔治不了 |
+| 2.2.6 | **磁力爬虫不再把出口 IP 打成限流**：模块内统一按 3～4.5 秒一条发请求（原来调度器只隔 1 秒，实测连续 19 条就被站点掐断连接）；详情请求超时由 60 秒收紧到 25 秒，撞限流后的冷却时间不再被自己的超时吃掉 |
+| 2.2.5 | **通知不再因出口抖动整条丢失**：Telegram 发送由「每条线路试一次」改为 0 / 5 / 12 秒三轮重试，代理换节点那十几秒的空窗能自动熬过去；连续失败的线路压制 10 分钟不再反复白等超时（国内直连 api.telegram.org 本就不通）；token 失效、chat_id 不对、bot 被拉黑等配置错直接停止重试并写明怎么修，不再只留一句「所有出网线路均不可用」 |
+| 2.2.4 | 冷却补上止步条件：累计冷却 120 + 240 + 480 秒仍未恢复就结束本轮并写明原因，不再把任务拖成「跑一整天也没进展」 |
+| 2.2.3 | **JavDB 抓取不再因一次连接被掐就整轮失败**：撞上反爬限流自动冷却 2 / 4 / 8 分钟重试，连续三轮探测都失败才报错；收藏同步、订阅补抓、磁力爬虫统一按 3 秒一条限速；列表页与详情页的 SSL 错误改为冷却重试，不再当成「这个条目没磁力」跳过；错误信息分清「出口被限流（等几分钟或换节点）」与「地区封锁（必须换地区）」 |
 | 2.2.2 | **修复 JavDB 抓取中断**：查清是 v2raya 的「最小延迟」策略把出口长期钉在日本节点，而日本被站点按地区封锁；已把日本节点移出出网池，出口改由新加坡 / 香港 / 美国等可用地区承担。**反爬限流与地区封锁分开处理**：403 改为退避重试并自动拉长请求间隔，只有版权限制页才判定出口不可用，不再一条 403 就让整轮任务作废；订阅补抓基础间隔由 1.5 秒放宽到 3 秒，受限时逐步后撤、恢复后收回。实测订阅补抓由 15 条全未命中恢复为 15 条全命中、入库 7 条 |
 | 2.2.1 | **抓取零产出主动告警**：连续 3 次抓不到内容就推一条通知，不再因为任务「没报错」而让整天 0 入库悄悄过去；「没活可干」（没有待补番号）不算零产出，不打扰人；JavDB 出口被封锁时立刻失败并写明原因，不再空跑几千次请求、每条影片重登一次；通知发送支持多线路兜底（配置代理 → 抓取代理 → 直连）；任务日志区分「成功 / 失败 / 本次无产出」 |
 | 2.2.0 | 手机端逐页梳理：验证码不再横向溢出、底部导航统一留安全区、长表格改卡片布局、小按钮触控热区补到 40px；双命名收敛，通俗模式下不再漏出仙侠词，页面标题、说明与图标统一从导航配置取；配色集中由主题变量提供，亮暗主题自动切换；文案与空态说清原因与下一步；新增前端 UI 守卫并接入发版门禁 |
